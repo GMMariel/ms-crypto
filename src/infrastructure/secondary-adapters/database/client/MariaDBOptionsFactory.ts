@@ -16,7 +16,6 @@ export class MariaDBOptionsFactory implements TypeOrmOptionsFactory {
 			type: 'mariadb',
 			...this.databaseConfiguration,
 			entities: [WalletEntity],
-			logging: true, // Activa el logging para depuración
 			bigNumberStrings: false,
 			supportBigNumbers: true,
 		};
