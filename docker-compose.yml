@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  node:
+    container_name: node-ms-crypto
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - ./:/app
+    ports:
+      - '3000:3000'
+    environment:
+      - APP_NAME="ms-crypto"
+      - DATABASE_HOST=database
+      - DATABASE_NAME=ms_crypto
+      - DATABASE_PASS=root
+      - DATABASE_USER=root
+    depends_on:
+      database:
+        condition: service_started
+    networks:
+      - crypto-net
+
+  database:
+    container_name: database-ms-crypto
+    image: 'mariadb:10.5'
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=ms_crypto
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+    volumes:
+      - app_database_volume:/var/lib/mysql
+    ports:
+      - 3306:3306
+    networks:
+      - crypto-net
+
+  node_start:
+    container_name: node-ms-crypto-start
+    build:
+      context: .
+      dockerfile: ./Dockerfile.start
+    user: node
+    volumes:
+      - ./:/usr/aplication
+    environment:
+      - DATABASE_HOST=database
+      - DATABASE_NAME=ms_crypto
+      - DATABASE_PASS=root
+      - DATABASE_USER=root
+    depends_on:
+      database:
+        condition: service_started
+    networks:
+      - crypto-net
+
+networks:
+  crypto-net:
+    name: crypto-net
+
+volumes:
+  app_database_volume:
