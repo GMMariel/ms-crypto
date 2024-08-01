@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString, IsEnum } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, IsEnum, Min } from 'class-validator';
 import { PaymentMethodEnum } from 'src/dominio/enums/PaymentMethodEnum';
 
 export class BuyBitcoinRequest {
@@ -18,6 +18,7 @@ export class BuyBitcoinRequest {
 	})
 	@IsNotEmpty()
 	@IsNumber()
+	@Min(0.00000001)
 	amount: number;
 
 	@ApiProperty({
@@ -25,7 +26,7 @@ export class BuyBitcoinRequest {
 		example: 'USD',
 	})
 	@IsNotEmpty()
-	@IsString()
+	@IsEnum(['USD'])
 	currency: string;
 
 	@ApiProperty({

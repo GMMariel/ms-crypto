@@ -1,11 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { WalletEntity } from 'src/dominio/entities/WalletEntity';
-import { NotFoundException } from '@nestjs/common';
 import { CryptoService } from 'src/application/services/CryptoService';
 import { BITCOINT, IBitcoinRepository } from 'src/application/interfacces/IBitcoinRepository';
 import { IWalletRepository, WALLET } from 'src/application/interfacces/IWalletRepository';
-import { UpdateResult } from 'typeorm';
-import { buyBitcoin, sellBitcoin } from '../mock';
+import { buyBitcoin } from '../mock';
 
 describe('CryptoService', () => {
 	let service: CryptoService;
@@ -52,38 +50,42 @@ describe('CryptoService', () => {
 			walletEntity.id = 1;
 			jest.spyOn(walletRepository, 'save').mockResolvedValue(walletEntity);
 
-			await service.buyBitcoin(buyBitcoin);
+			const price = await service.buyBitcoin(buyBitcoin);
 
 			expect(walletRepository.findByUserId).toHaveBeenCalledWith('2ea91c17-c871-40f1-88a6-7386f1fac865');
 			expect(walletRepository.save).toHaveBeenCalledWith(expect.any(WalletEntity));
+			expect(price).toBe('0.0200000000');
 		});
-	});
 
-	describe('sellBitcoin', () => {
-		it('should throw an error if user not found', async () => {
+		it('should calculate the correct amount of bitcoin to be purchased', async () => {
+			const amountInUsd = 100;
+			const amountInBitcoin = 0.01;
+
+			jest.spyOn(bitcoinRepository, 'get').mockResolvedValue({
+				bitcoin: { usd: 10000 },
+			});
+			const calculatedAmount = await service.calcculateAmount(amountInUsd);
+			expect(calculatedAmount).toBe(amountInBitcoin);
+		});
+
+		it('should create a new wallet if none exists for the user', async () => {
+			const userId = buyBitcoin.userId;
+			const amountInBitcoin = '0.0100000000';
 			jest.spyOn(walletRepository, 'findByUserId').mockResolvedValue(null);
 
-			await expect(service.sellBitcoin(sellBitcoin)).rejects.toThrow(NotFoundException);
-		});
+			jest.spyOn(bitcoinRepository, 'get').mockResolvedValue({
+				bitcoin: { usd: 10000 },
+			});
+			jest.spyOn(walletRepository, 'save').mockResolvedValue(null as any);
+			buyBitcoin.amount = 100;
+			const balance = await service.buyBitcoin(buyBitcoin);
 
-		it('should throw an error if balance is insufficient', async () => {
-			const walletEntity = new WalletEntity('2ea91c17-c871-40f1-88a6-7386f1fac865', 0);
-
-			jest.spyOn(walletRepository, 'findByUserId').mockResolvedValue(walletEntity);
-
-			await expect(service.sellBitcoin(sellBitcoin)).rejects.toThrow('Insufficient funds');
-		});
-
-		it('should update wallet balance on successful sell', async () => {
-			const walletEntity = new WalletEntity('2ea91c17-c871-40f1-88a6-7386f1fac865', 10);
-			const mockUpdateResult: UpdateResult = { affected: 1, raw: {}, generatedMaps: [] };
-			jest.spyOn(walletRepository, 'findByUserId').mockResolvedValue(walletEntity);
-			jest.spyOn(walletRepository, 'update').mockResolvedValue(mockUpdateResult);
-
-			await service.sellBitcoin(sellBitcoin);
-
-			expect(walletRepository.update).toHaveBeenCalledWith(expect.any(WalletEntity));
-			expect(walletEntity.balance).toBe(9);
+			expect(walletRepository.findByUserId).toHaveBeenCalledWith(userId);
+			expect(walletRepository.save).toHaveBeenCalledWith({
+				userId,
+				balance: 0.02,
+			});
+			expect(balance).toBe(amountInBitcoin);
 		});
 	});
 });

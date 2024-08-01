@@ -4,7 +4,6 @@ import { CryptoService } from 'src/application/services/CryptoService';
 import { CryptoResponse } from './response/CryptoResponse';
 import { BuyBitcoinRequest } from './requests/BuyBitcoinRequest';
 import { SellBitcoinRequest } from './requests/SellBitcoinRequest';
-import { SellResponse } from './response/SellResponse';
 import { BuyResponse } from './response/BuyResponse';
 
 @Controller('api')
@@ -24,8 +23,8 @@ export class CryptoController {
 	@HttpCode(HttpStatus.CREATED)
 	@ApiOperation({ summary: 'Sell bitcoin.' })
 	@ApiResponse({ status: HttpStatus.CREATED })
-	public async sell(@Body() request: SellBitcoinRequest): Promise<SellResponse> {
-		return new SellResponse(await this.cryptoService.sellBitcoin(request));
+	public async sell(@Body() request: SellBitcoinRequest): Promise<void> {
+		await this.cryptoService.sellBitcoin(request);
 	}
 
 	@Get('portfolio/:id')

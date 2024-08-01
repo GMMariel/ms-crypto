@@ -13,7 +13,7 @@ export class CryptoService {
 		@Inject(WALLET) private walletRepository: IWalletRepository,
 	) {}
 
-	public async buyBitcoin(buyBitcoin: IBuyBitcoin): Promise<number> {
+	public async buyBitcoin(buyBitcoin: IBuyBitcoin): Promise<string> {
 		const amount = await this.calcculateAmount(buyBitcoin.amount);
 		let walletEntity = await this.walletRepository.findByUserId(buyBitcoin.userId);
 		if (!walletEntity) {
@@ -21,7 +21,7 @@ export class CryptoService {
 		}
 		walletEntity.balance = walletEntity ? walletEntity.balance + amount : amount;
 		await this.walletRepository.save(walletEntity);
-		return walletEntity.balance;
+		return amount.toFixed(10);
 	}
 
 	public async calcculateAmount(amount: number): Promise<number> {
@@ -29,17 +29,16 @@ export class CryptoService {
 		return amount / priceBitcoin.bitcoin.usd;
 	}
 
-	public async sellBitcoin(sellBitcoin: ISellBitcoin): Promise<number> {
+	public async sellBitcoin(sellBitcoin: ISellBitcoin): Promise<void> {
 		const walletEntity = await this.walletRepository.findByUserId(sellBitcoin.userId);
 		if (!walletEntity) {
 			throw new NotFoundException(`User Id: ${sellBitcoin.userId} not found`);
 		}
-		if (walletEntity.balance <= 0) {
+		if (walletEntity.balance <= sellBitcoin.amount || walletEntity.balance <= 0) {
 			throw new InsufficientFundsException();
 		}
 		walletEntity.balance -= sellBitcoin.amount;
 		await this.walletRepository.update(walletEntity);
-		return walletEntity.balance;
 	}
 
 	public async get(userId: string): Promise<number> {
