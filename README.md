@@ -2,72 +2,56 @@
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
+<p align="center">
+  Microservicio privado para la gestión de transacciones de criptomonedas, desarrollado con una arquitectura hexagonal.
 </p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+<p align="center">
+  <a href="https://github.com/GMMariel/ms-crypto" target="_blank"><img src="https://img.shields.io/github/license/GMMariel/ms-crypto" alt="License" /></a>
+  <a href="https://github.com/GMMariel/ms-crypto" target="_blank"><img src="https://img.shields.io/github/repo-size/GMMariel/ms-crypto" alt="Repo Size" /></a>
+  <a href="https://github.com/GMMariel/ms-crypto" target="_blank"><img src="https://img.shields.io/github/issues/GMMariel/ms-crypto" alt="Issues" /></a>
+  <a href="https://github.com/GMMariel/ms-crypto" target="_blank"><img src="https://img.shields.io/github/forks/GMMariel/ms-crypto" alt="Forks" /></a>
+  <a href="https://github.com/GMMariel/ms-crypto" target="_blank"><img src="https://img.shields.io/github/stars/GMMariel/ms-crypto" alt="Stars" /></a>
+</p>
 
-## Description
+## Descripción
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Este proyecto es un microservicio privado para la gestión de transacciones de criptomonedas. Fue desarrollado en menos de 8 horas, implementando una arquitectura hexagonal que facilita la escalabilidad y mantenibilidad del código. La lógica de negocios está desacoplada de la infraestructura, permitiendo una integración más sencilla con otros sistemas.
 
-## Installation
+## Instalación
 
-```bash
-$ npm install
+Para ejecutar el proyecto con Docker:
+
+``` bash
+# Construir los contenedores
+$ docker-compose build
+
+# Iniciar los contenedores
+$ docker-compose up
 ```
 
-## Running the app
+## Acceso a la API
+La documentación de la API está disponible en http://localhost:3000/api.
 
-```bash
-# development
-$ npm run start
+##  Test
+``` bash
+# Pruebas unitarias
+$ npm run test:unit
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+# Pruebas de arquitectura
+$ npm run test:arch
 ```
+## Detalles del Proyecto
 
-## Test
+El proyecto está pensado como un microservicio privado, donde las validaciones de autorización y autenticación se manejan en un Backend-for-Frontend (BFF). Además, se ha implementado Swagger para facilitar la documentación y prueba de la API.
 
-```bash
-# unit tests
-$ npm run test
+## Futuras Mejoras
 
-# e2e tests
-$ npm run test:e2e
+- **Modelo de Datos:** Mejorar el manejo de números grandes o muy pequeños, optimizando las representaciones de saldo y transacciones.
+- **Decoradores Personalizados:** Implementar decoradores personalizados para la validación de campos.
+- **Arquitectura y Escalabilidad:** Ampliar la base de datos separando las entidades de usuarios y transacciones de criptomonedas.
+- **Lógica de Negocio:** Agregar el intercambio de varias monedas.
+- **Test:** Desarrollar test de integración y más tests unitarios para cubrir todo el proyecto y alcanzar una cobertura mayor al 90%.
 
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+## Mantente en Contacto
+Autor - GMMariel
+Repositorio - https://github.com/GMMariel/ms-crypto
